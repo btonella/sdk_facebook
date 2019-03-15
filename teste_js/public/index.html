@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Facebook Login JavaScript Example</title>
+		<meta charset="UTF-8">
+
+		<meta property="og:url"           content="https://www.culturagame.com.br" />
+		<meta property="og:type"          content="website" />
+		<meta property="og:title"         content="Your Website Title" />
+		<meta property="og:description"   content="Your description" />
+
+	</head>
+	<body>
+
+		<div id="fb-root"></div>
+		<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v3.2&appId=2271777859805803&autoLogAppEvents=1"></script>
+		<script>
+			// This is called with the results from from FB.getLoginStatus().
+			function statusChangeCallback(response) {
+				console.log('statusChangeCallback');
+				console.log(response);
+				console.log("token")
+				console.log(response.authResponse.accessToken);
+				// The response object is returned with a status field that lets the
+				// app know the current login status of the person.
+				// Full docs on the response object can be found in the documentation
+				// for FB.getLoginStatus().
+				if (response.status === 'connected') {
+					// Logged into your app and Facebook.
+					testAPI();
+				} else {
+					// The person is not logged into your app or we are unable to tell.
+					document.getElementById('status').innerHTML = 'Please log ' +
+					'into this app.';
+				}
+			}
+
+			// This function is called when someone finishes with the Login
+			// Button.  See the onlogin handler attached to it in the sample
+			// code below.
+			function checkLoginState() {
+					
+				FB.getLoginStatus(function(response) {
+					statusChangeCallback(response);
+				});
+			}
+
+			
+
+			// Load the SDK asynchronously
+
+			(function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id)) return;
+				js = d.createElement(s); js.id = id;
+				js.src = "https://connect.facebook.net/en_US/sdk.js";
+				fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+
+			// Here we run a very simple test of the Graph API after login is
+			// successful.  See statusChangeCallback() for when this call is made.
+			function testAPI() {
+				console.log('Welcome!  Fetching your information.... ');
+				FB.api('/me', function(response) {
+					console.log('Successful login for: ' + response.name);
+					document.getElementById('status').innerHTML =
+					'Thanks for logging in, ' + response.name + '!';
+				});
+			}
+
+
+
+			//ESSA FUNÇÃO SÓ VAI FUNCIONAR COM:
+			//	- Usuário logado com o facebook
+			//	- App aprovado pela análise do facebook
+			//	- Link para solicitar análise: https://developers.facebook.com/apps/2271777859805803/app-review/permissions/
+			//	- Escolha o "publish_pages" e "manage_pages" para poder postar em páginas
+			//	- Alterar o número que tem a baixo para o ID da página
+			//COMO DESCOBRIR O ID DA PÁGINA:
+			//	- Pegar o token que foi gerado com o login (tem a cima ele sendo enviado no log do navegador)
+			//	- Link para colocar o token: https://developers.facebook.com/tools/explorer/2271777859805803/?method=GET&path=me%3Ffields%3Did%2Cname&version=v3.2
+			//	- Escolher a página que vai ser postado, ao lado do "Token de acesso"
+			//	- Clique em enviar e o ID da página deve aparecer na resposta
+			//OPÇÕES PARA SEREM ENVIADAS NO DIC DA MENSAGEM
+			//	- Link: https://developers.facebook.com/docs/graph-api/reference/page
+
+
+			function postToPage(){
+				console.log("entrou")
+				FB.api("/850790618393875/feed",
+					"POST",
+					{
+						"message": "This is a test",
+						//só é possível enviar imagem se enviar link também!
+						"picture": "https://www.thesprucepets.com/thmb/810a_HYIb2E8DxkedI6V-3gtkys=/450x0/filters:no_upscale():max_bytes(150000):strip_icc()/kitten-looking-at-camera-521981437-57d840213df78c583374be3b.jpg",
+						"link": "https://www.thesprucepets.com/thmb/810a_HYIb2E8DxkedI6V-3gtkys=/450x0/filters:no_upscale():max_bytes(150000):strip_icc()/kitten-looking-at-camera-521981437-57d840213df78c583374be3b.jpg"
+
+					},
+					function(response) {
+						if (response && !response.error){
+							console.log("deu erro")
+						}
+
+				})
+			}
+
+			</script>
+
+			<p>
+				<a href="javascript:;" onclick="postToPage()">Post to page</a>
+
+			</p>
+		
+		<!--
+		Below we include the Login Button social plugin. This button uses
+		the JavaScript SDK to present a graphical Login button that triggers
+		the FB.login() function when clicked.
+		-->
+
+		<div class="fb-share-button" 
+			data-href="https://www.thesprucepets.com/thmb/810a_HYIb2E8DxkedI6V-3gtkys=/450x0/filters:no_upscale():max_bytes(150000):strip_icc()/kitten-looking-at-camera-521981437-57d840213df78c583374be3b.jpg"
+			data-size="small"
+			data-mobile-iframe="true"
+			data-layout="button_count">
+		</div>
+
+		<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+		</fb:login-button>
+
+
+		<div class="fb-share-button" data-href="https://www.culturagame.com.br/" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.culturagame.com.br%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore"></a></div>
+
+		<div id="status">
+		</div>
+
+	</body>
+</html>
